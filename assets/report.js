@@ -1,6 +1,7 @@
 /* Banco de Experiencias — report page population (vanilla) */
 (function () {
   const B = window.BANCO, I = window.ICONS;
+  const LANG = (new URLSearchParams(location.search).get('lang') === 'en') ? 'en' : 'es';
   const icon = (name, size, color) => {
     const raw = (I[name] || '').replace('<svg ', `<svg width="${size}" height="${size}" style="display:block${color ? ';color:' + color : ''}" `);
     return raw;
@@ -39,7 +40,7 @@
   const maxPct = ranked[0].pct;
   document.getElementById('bars').innerHTML = ranked.map((d, i) => `
     <div class="bar-row">
-      <div class="bar-label">${i + 1}. ${d.nombre}</div>
+      <div class="bar-label">${i + 1}. ${d.nombre[LANG]}</div>
       <div class="bar-track">
         <div class="bar-fill-wrap"><div class="bar-fill" style="width:${Math.round((d.pct / maxPct) * 100)}%;background:${shades[i]}"></div></div>
         <div class="bar-pct">${d.pct}%</div>

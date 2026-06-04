@@ -1,51 +1,45 @@
-/* Banco de Experiencias de Gobernanza Pública — capa de datos.
+/* Banco de Experiencias de Gobernanza Pública — capa de datos (bilingüe ES/EN).
    Construye window.BANCO a partir de los 104 casos REALES cargados en
-   assets/experiences.js (generado desde el Excel de la guía estratégica).
-   Los agregados (KPIs, mapa de cobertura, barras por dimensión) se calculan
-   dinámicamente a partir de los datos reales. */
+   assets/experiences.js (generado desde el Excel ES + en-US de la guía estratégica).
+   Los agregados (KPIs, mapa, barras) se calculan dinámicamente y son
+   independientes del idioma; los textos se resuelven por locale en la UI. */
 (function () {
   // ---- 6 aceleradores de gobernanza (orden oficial de la guía) ----
   const dimensions = [
-    { id: 'anticipatoria', n: 1, nombre: 'Gobernanza anticipatoria', icon: 'anticipatoria', tint: '#3091A6', soft: '#E4F2F5' },
-    { id: 'colaborativa', n: 2, nombre: 'Gobernanza colaborativa', icon: 'colaborativa', tint: '#1E8FB0', soft: '#E3F2F6' },
-    { id: 'comunicacional', n: 3, nombre: 'Gobernanza comunicacional', icon: 'comunicacional', tint: '#2C7BD0', soft: '#E8F0FB' },
-    { id: 'integra', n: 4, nombre: 'Gobernanza íntegra', icon: 'integra', tint: '#1F9C8F', soft: '#E2F4F1' },
-    { id: 'digital', n: 5, nombre: 'Gobernanza digital', icon: 'digital', tint: '#1F6FC2', soft: '#E7EFFA' },
-    { id: 'intergeneracional', n: 6, nombre: 'Gobernanza intergeneracional', icon: 'intergeneracional', tint: '#3E73C9', soft: '#E9EFFB' },
+    { id: 'anticipatoria', n: 1, nombre: { es: 'Gobernanza anticipatoria', en: 'Anticipatory governance' }, icon: 'anticipatoria', tint: '#3091A6', soft: '#E4F2F5' },
+    { id: 'colaborativa', n: 2, nombre: { es: 'Gobernanza colaborativa', en: 'Collaborative governance' }, icon: 'colaborativa', tint: '#1E8FB0', soft: '#E3F2F6' },
+    { id: 'comunicacional', n: 3, nombre: { es: 'Gobernanza comunicacional', en: 'Communicational governance' }, icon: 'comunicacional', tint: '#2C7BD0', soft: '#E8F0FB' },
+    { id: 'integra', n: 4, nombre: { es: 'Gobernanza íntegra', en: 'Governance with integrity' }, icon: 'integra', tint: '#1F9C8F', soft: '#E2F4F1' },
+    { id: 'digital', n: 5, nombre: { es: 'Gobernanza digital', en: 'Digital governance' }, icon: 'digital', tint: '#1F6FC2', soft: '#E7EFFA' },
+    { id: 'intergeneracional', n: 6, nombre: { es: 'Gobernanza intergeneracional', en: 'Intergenerational governance' }, icon: 'intergeneracional', tint: '#3E73C9', soft: '#E9EFFB' },
   ];
 
+  // niveles: claves canónicas (idioma-neutras); las etiquetas se traducen en nivelLabels
   const niveles = ['Nacional', 'Subnacional', 'Local'];
+  const nivelLabels = {
+    es: { Nacional: 'Nacional', Subnacional: 'Subnacional', Local: 'Local' },
+    en: { Nacional: 'National', Subnacional: 'Subnational', Local: 'Local' },
+  };
 
-  // ---- catálogo de países LAC (para nombres, banderas y mapa) ----
+  // ---- catálogo de países LAC (nombre bilingüe, bandera) ----
+  const C = (code, es, en, flag) => ({ code, nombre: { es, en }, flag });
   const countries = [
-    { code: 'MX', nombre: 'México', flag: '🇲🇽' },
-    { code: 'GT', nombre: 'Guatemala', flag: '🇬🇹' },
-    { code: 'BZ', nombre: 'Belice', flag: '🇧🇿' },
-    { code: 'SV', nombre: 'El Salvador', flag: '🇸🇻' },
-    { code: 'HN', nombre: 'Honduras', flag: '🇭🇳' },
-    { code: 'NI', nombre: 'Nicaragua', flag: '🇳🇮' },
-    { code: 'CR', nombre: 'Costa Rica', flag: '🇨🇷' },
-    { code: 'PA', nombre: 'Panamá', flag: '🇵🇦' },
-    { code: 'CU', nombre: 'Cuba', flag: '🇨🇺' },
-    { code: 'DO', nombre: 'R. Dominicana', flag: '🇩🇴' },
-    { code: 'HT', nombre: 'Haití', flag: '🇭🇹' },
-    { code: 'JM', nombre: 'Jamaica', flag: '🇯🇲' },
-    { code: 'TT', nombre: 'Trinidad y Tobago', flag: '🇹🇹' },
-    { code: 'CO', nombre: 'Colombia', flag: '🇨🇴' },
-    { code: 'VE', nombre: 'Venezuela', flag: '🇻🇪' },
-    { code: 'GY', nombre: 'Guyana', flag: '🇬🇾' },
-    { code: 'EC', nombre: 'Ecuador', flag: '🇪🇨' },
-    { code: 'PE', nombre: 'Perú', flag: '🇵🇪' },
-    { code: 'BO', nombre: 'Bolivia', flag: '🇧🇴' },
-    { code: 'BR', nombre: 'Brasil', flag: '🇧🇷' },
-    { code: 'PY', nombre: 'Paraguay', flag: '🇵🇾' },
-    { code: 'CL', nombre: 'Chile', flag: '🇨🇱' },
-    { code: 'AR', nombre: 'Argentina', flag: '🇦🇷' },
-    { code: 'UY', nombre: 'Uruguay', flag: '🇺🇾' },
+    C('MX', 'México', 'Mexico', '🇲🇽'), C('GT', 'Guatemala', 'Guatemala', '🇬🇹'),
+    C('BZ', 'Belice', 'Belize', '🇧🇿'), C('SV', 'El Salvador', 'El Salvador', '🇸🇻'),
+    C('HN', 'Honduras', 'Honduras', '🇭🇳'), C('NI', 'Nicaragua', 'Nicaragua', '🇳🇮'),
+    C('CR', 'Costa Rica', 'Costa Rica', '🇨🇷'), C('PA', 'Panamá', 'Panama', '🇵🇦'),
+    C('CU', 'Cuba', 'Cuba', '🇨🇺'), C('DO', 'R. Dominicana', 'Dominican Rep.', '🇩🇴'),
+    C('HT', 'Haití', 'Haiti', '🇭🇹'), C('JM', 'Jamaica', 'Jamaica', '🇯🇲'),
+    C('TT', 'Trinidad y Tobago', 'Trinidad and Tobago', '🇹🇹'), C('CO', 'Colombia', 'Colombia', '🇨🇴'),
+    C('VE', 'Venezuela', 'Venezuela', '🇻🇪'), C('GY', 'Guyana', 'Guyana', '🇬🇾'),
+    C('EC', 'Ecuador', 'Ecuador', '🇪🇨'), C('PE', 'Perú', 'Peru', '🇵🇪'),
+    C('BO', 'Bolivia', 'Bolivia', '🇧🇴'), C('BR', 'Brasil', 'Brazil', '🇧🇷'),
+    C('PY', 'Paraguay', 'Paraguay', '🇵🇾'), C('CL', 'Chile', 'Chile', '🇨🇱'),
+    C('AR', 'Argentina', 'Argentina', '🇦🇷'), C('UY', 'Uruguay', 'Uruguay', '🇺🇾'),
   ];
   const cName = {}; countries.forEach((c) => (cName[c.code] = c));
 
-  // ---- experiencias REALES ----
+  // ---- experiencias REALES (cada una con sub-objetos .es y .en) ----
   const experiences = (window.EXPERIENCES_RAW || []).map((e) => ({
     ...e,
     flag: (cName[e.pais] || {}).flag || '',
@@ -54,15 +48,12 @@
   // marcar como destacada la experiencia PNUD más reciente de cada dimensión
   dimensions.forEach((d) => {
     const inDim = experiences.filter((e) => e.dimensionId === d.id && e.vinculadaPNUD);
-    if (inDim.length) {
-      inDim.sort((a, b) => b.anio - a.anio || a.id - b.id)[0].destacada = true;
-    }
+    if (inDim.length) inDim.sort((a, b) => b.anio - a.anio || a.id - b.id)[0].destacada = true;
   });
 
-  // ---- agregados ----
+  // ---- agregados (idioma-neutros) ----
   const byDimension = dimensions.map((d) => ({
-    ...d,
-    count: experiences.filter((e) => e.dimensionId === d.id).length,
+    ...d, count: experiences.filter((e) => e.dimensionId === d.id).length,
   }));
   const total = experiences.length;
   byDimension.forEach((d) => (d.pct = total ? Math.round((d.count / total) * 100) : 0));
@@ -88,5 +79,49 @@
     paises: Object.values(byCountry).filter((v) => v > 0).length,
   };
 
-  window.BANCO = { dimensions, byDimension, niveles, countries, cName, experiences, byCountry, maxCountry, intensity, stats };
+  // ---- diccionario de cadenas de interfaz ----
+  const strings = {
+    es: {
+      title: 'Repositorio interactivo',
+      subtitle: 'Banco de experiencias de gobernanza pública · América Latina y el Caribe',
+      topbarNote: (s) => `${s.total} experiencias · ${s.vinculadas} vinculadas al PNUD · ${s.paises} países · enlaces oficiales en cada ficha`,
+      searchPlaceholder: 'Buscar por palabra clave, tema, institución…',
+      fPais: 'País', fDim: 'Dimensión', fNivel: 'Nivel de gobierno', fInst: 'Institución',
+      clear: 'Limpiar filtros',
+      mapTitle: 'Mapa de América Latina y el Caribe',
+      mapCaption: (s) => `${s.paises} países · ${s.total} experiencias · clic en un país para filtrar`,
+      sortBy: 'Ordenar por:', sortRecent: 'Más recientes', sortAlpha: 'Alfabético', sortCountry: 'País',
+      expS: 'experiencia', expP: 'experiencias',
+      noResultsT: 'Sin resultados', noResultsB: 'Ajusta los filtros o el término de búsqueda para encontrar experiencias.',
+      download: 'Descargar base', viewFichas: 'Ver fichas',
+      legAlta: 'Alta', legMedia: 'Media', legBaja: 'Baja',
+      pnudTag: 'PNUD',
+      fhPais: 'País', fhNivel: 'Nivel de gobierno', fhInst: 'Institución', fhAnio: 'Año o período',
+      fhDesc: 'Descripción', fhBP: 'Buena práctica', fhActores: 'Actores principales', fhLinks: 'Enlaces de consulta',
+      remove: 'Quitar', close: 'Cerrar', zoomIn: 'Acercar', zoomOut: 'Alejar',
+      csvHead: ['Título', 'Dimensión', 'País', 'Institución', 'Nivel', 'Año', 'Vinculada PNUD'], csvYes: 'Sí', csvNo: 'No',
+    },
+    en: {
+      title: 'Interactive repository',
+      subtitle: 'Public governance experience bank · Latin America and the Caribbean',
+      topbarNote: (s) => `${s.total} experiences · ${s.vinculadas} linked to UNDP · ${s.paises} countries · official links in every record`,
+      searchPlaceholder: 'Search by keyword, topic, institution…',
+      fPais: 'Country', fDim: 'Dimension', fNivel: 'Level of government', fInst: 'Institution',
+      clear: 'Clear filters',
+      mapTitle: 'Map of Latin America and the Caribbean',
+      mapCaption: (s) => `${s.paises} countries · ${s.total} experiences · click a country to filter`,
+      sortBy: 'Sort by:', sortRecent: 'Most recent', sortAlpha: 'Alphabetical', sortCountry: 'Country',
+      expS: 'experience', expP: 'experiences',
+      noResultsT: 'No results', noResultsB: 'Adjust the filters or search term to find experiences.',
+      download: 'Download dataset', viewFichas: 'View records',
+      legAlta: 'High', legMedia: 'Medium', legBaja: 'Low',
+      pnudTag: 'UNDP',
+      fhPais: 'Country', fhNivel: 'Level of government', fhInst: 'Institution', fhAnio: 'Year or period',
+      fhDesc: 'Description', fhBP: 'Best practice', fhActores: 'Key actors', fhLinks: 'Reference links',
+      remove: 'Remove', close: 'Close', zoomIn: 'Zoom in', zoomOut: 'Zoom out',
+      csvHead: ['Title', 'Dimension', 'Country', 'Institution', 'Level', 'Year', 'UNDP-linked'], csvYes: 'Yes', csvNo: 'No',
+    },
+  };
+
+  window.BANCO = { dimensions, byDimension, niveles, nivelLabels, countries, cName, experiences, byCountry, maxCountry, intensity, stats, strings };
 })();

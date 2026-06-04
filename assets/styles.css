@@ -56,6 +56,13 @@ svg { display: block; }
 button { font-family: inherit; cursor: pointer; }
 ::selection { background: var(--blue-200); }
 
+/* keyboard focus visibility (accessibility) */
+a:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-visible {
+  outline: 2px solid var(--blue-600); outline-offset: 2px; border-radius: 4px;
+}
+.geo-c:focus-visible { outline: 2px solid var(--blue-700); outline-offset: 1px; }
+.geo-c.clk { cursor: pointer; }
+
 /* scrollbars */
 .scroll::-webkit-scrollbar { width: 10px; height: 10px; }
 .scroll::-webkit-scrollbar-thumb { background: #cdd8e6; border-radius: 20px; border: 3px solid transparent; background-clip: content-box; }
@@ -109,6 +116,14 @@ button { font-family: inherit; cursor: pointer; }
 .topbar-note { display: flex; align-items: flex-start; gap: 8px; color: var(--blue-600); font-size: 12.5px; max-width: 230px; line-height: 1.35; text-align: right; text-decoration: none; }
 .topbar-note svg { width: 18px; height: 18px; flex: none; margin-top: 1px; }
 .topbar-note span { color: var(--muted); }
+.topbar-right { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+
+/* language switch */
+.lang-switch { display: inline-flex; border: 1px solid var(--line-strong); border-radius: 999px; overflow: hidden; background: var(--white); }
+.lang-switch button { border: 0; background: transparent; padding: 5px 13px; font-size: 12.5px; font-weight: 700; letter-spacing: .4px; color: var(--muted); line-height: 1; }
+.lang-switch button:hover { color: var(--blue-600); }
+.lang-switch button.on { background: var(--blue-600); color: #fff; }
+.lang-switch button:focus-visible { outline: 2px solid var(--blue-500); outline-offset: -2px; }
 
 /* search */
 .search {
@@ -326,6 +341,7 @@ button { font-family: inherit; cursor: pointer; }
   .main { grid-template-columns: 1fr; }
   .map-panel { position: static; max-width: 440px; margin: 0 auto; width: 100%; }
   .topbar { flex-direction: column; gap: 12px; }
+  .topbar-right { align-items: flex-start; flex-direction: row-reverse; justify-content: flex-end; flex-wrap: wrap; gap: 12px; align-self: stretch; }
   .topbar-note { text-align: left; max-width: none; }
   .topbar h1 { font-size: 23px; }
   .filters { gap: 8px; }

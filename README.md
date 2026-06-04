@@ -9,7 +9,8 @@ Pensado para publicarse como **mockup en línea (GitHub Pages)** para el cliente
 | Ruta | Qué es |
 |------|--------|
 | **`index.html`** | **Dashboard interactivo** (página principal del sitio). Buscador, filtros por país / dimensión / nivel / institución, mapa de cobertura y fichas detalladas con enlaces oficiales. |
-| `informe-impreso/index.html` | **Página de informe imprimible (A4).** Datos generales + mapa + barras + QR hacia el dashboard. **No está enlazada desde el dashboard** porque va dentro de un documento impreso → exportar a PDF con *Imprimir → Guardar como PDF*. |
+| `informe-impreso/index.html` | **Página de informe imprimible (A4) en español.** Datos generales + mapa + barras + QR hacia el dashboard. **No está enlazada desde el dashboard** porque va dentro de un documento impreso → exportar a PDF con *Imprimir → Guardar como PDF*. |
+| `informe-impreso/en/index.html` | **Versión en inglés** del informe imprimible. |
 | `assets/` | Estilos, lógica (React vía CDN), datos y logos. |
 | `assets/experiences.js` | **Datos reales** generados desde el Excel de la guía estratégica (54 vinculadas al PNUD + 50 adicionales). No editar a mano. |
 | `tools/make-qr.py` | Regenera el QR del informe con la URL pública real. |

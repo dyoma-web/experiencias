@@ -1,18 +1,22 @@
 /* Banco de Experiencias — report page population (vanilla) */
 (function () {
   const B = window.BANCO, I = window.ICONS;
-  const LANG = (new URLSearchParams(location.search).get('lang') === 'en') ? 'en' : 'es';
+  const LANG = window.INFORME_LANG === 'en' || (new URLSearchParams(location.search).get('lang') === 'en') ? 'en' : 'es';
   const icon = (name, size, color) => {
     const raw = (I[name] || '').replace('<svg ', `<svg width="${size}" height="${size}" style="display:block${color ? ';color:' + color : ''}" `);
     return raw;
   };
 
   /* ---- stat cards ---- */
+  const CARDLBL = {
+    es: ['experiencias', 'vinculadas al PNUD', 'experiencias adicionales', 'dimensiones'],
+    en: ['experiences', 'linked to UNDP', 'additional experiences', 'dimensions'],
+  }[LANG];
   const cards = [
-    { icon: 'statPeople', num: B.stats.total, lbl: 'experiencias', teal: false },
-    { icon: 'statLinked', num: B.stats.vinculadas, lbl: 'vinculadas al PNUD', teal: false },
-    { icon: 'statAdd', num: B.stats.adicionales, lbl: 'experiencias adicionales', teal: true },
-    { icon: 'statPie', num: B.stats.dimensiones, lbl: 'dimensiones', teal: false },
+    { icon: 'statPeople', num: B.stats.total, lbl: CARDLBL[0], teal: false },
+    { icon: 'statLinked', num: B.stats.vinculadas, lbl: CARDLBL[1], teal: false },
+    { icon: 'statAdd', num: B.stats.adicionales, lbl: CARDLBL[2], teal: true },
+    { icon: 'statPie', num: B.stats.dimensiones, lbl: CARDLBL[3], teal: false },
   ];
   document.getElementById('stats').innerHTML = cards.map((c) => `
     <div class="stat-card${c.teal ? ' teal' : ''}">

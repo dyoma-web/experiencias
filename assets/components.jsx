@@ -133,7 +133,8 @@ function GeoMap({ selected, onToggle, byCountry, intensity, interactive = true, 
               aria-pressed={data && interactive ? !!sel : undefined}
               onClick={(e) => { if (interactive && data) { onToggle(code); e.currentTarget.blur(); } }}
               onKeyDown={(e) => { if (interactive && data && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); onToggle(code); } }}
-              onMouseMove={(e) => move(e, code)} />
+              onMouseMove={(e) => move(e, code)}
+              onMouseLeave={() => setTip(null)} />
           );
         })}
       </svg>

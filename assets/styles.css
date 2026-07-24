@@ -101,7 +101,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-vis
    ============================================================ */
 .app {
   min-height: 100vh;
-  background: var(--panel);
+  background: #fff;
 }
 .app-shell {
   max-width: 1320px;

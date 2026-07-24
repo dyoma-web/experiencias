@@ -114,7 +114,10 @@ function GeoMap({ selected, onToggle, byCountry, intensity, interactive = true, 
       )}
       <svg viewBox={vb} className="geomap-svg" preserveAspectRatio="xMidYMid meet" onMouseLeave={() => setTip(null)} role="img" aria-label={t.mapTitle}>
         {G.context.map((code) => <path key={code} d={G.shapes[code]} className="geo-ctx" vectorEffect="non-scaling-stroke" />)}
-        {G.lac.map((code) => {
+        {/* los seleccionados se dibujan al final para que su contorno quede sobre los vecinos */}
+        {G.lac.slice().sort((a, b) =>
+          Number(!!(selected && selected.has(a))) - Number(!!(selected && selected.has(b)))
+        ).map((code) => {
           const data = isData(code);
           const inten = data ? intensity(code) : 'none';
           const sel = selected && selected.has(code);
@@ -128,7 +131,7 @@ function GeoMap({ selected, onToggle, byCountry, intensity, interactive = true, 
               tabIndex={data && interactive ? 0 : undefined}
               aria-label={data ? `${name}: ${byCountry[code] || 0} ${(byCountry[code] === 1 ? t.expS : t.expP)}` : undefined}
               aria-pressed={data && interactive ? !!sel : undefined}
-              onClick={() => interactive && data && onToggle(code)}
+              onClick={(e) => { if (interactive && data) { onToggle(code); e.currentTarget.blur(); } }}
               onKeyDown={(e) => { if (interactive && data && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); onToggle(code); } }}
               onMouseMove={(e) => move(e, code)} />
           );

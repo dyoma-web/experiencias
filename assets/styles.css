@@ -60,7 +60,8 @@ button { font-family: inherit; cursor: pointer; }
 a:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-visible {
   outline: 2px solid var(--blue-600); outline-offset: 2px; border-radius: 4px;
 }
-.geo-c:focus-visible { outline: 2px solid var(--blue-700); outline-offset: 1px; }
+.geo-c:focus { outline: none; } /* sin recuadro al clic de ratón */
+.geo-c:focus-visible { outline: 2px solid var(--blue-700); outline-offset: 1px; } /* se conserva para teclado */
 .geo-c.clk { cursor: pointer; }
 
 /* scrollbars */

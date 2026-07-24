@@ -108,7 +108,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-vis
    ============================================================ */
 .app {
   min-height: 100vh;
-  background: var(--panel); /* fondo suave de la nueva línea; las cards blancas resaltan */
+  background: #fff;
 }
 .app-shell {
   max-width: 1320px;
@@ -119,7 +119,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-vis
 /* top bar */
 .topbar { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; margin-bottom: 22px; }
 .topbar-left { display: flex; align-items: center; gap: 16px; }
-.topbar h1 { font-size: 27px; font-weight: 800; color: var(--ink); margin: 0; letter-spacing: -.3px; }
+.topbar h1 { font-size: 23px; font-weight: 800; color: var(--ink); margin: 0; letter-spacing: -.3px; max-width: 760px; line-height: 1.25; }
 .topbar .sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
 .topbar-note { display: flex; align-items: flex-start; gap: 8px; color: var(--blue-600); font-size: 12.5px; max-width: 230px; line-height: 1.35; text-align: right; text-decoration: none; }
 .topbar-note svg { width: 18px; height: 18px; flex: none; margin-top: 1px; }

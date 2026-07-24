@@ -86,11 +86,7 @@ function App() {
         {/* top bar */}
         <header className="topbar">
           <div className="topbar-left">
-            <PnudMark lg />
-            <div>
-              <h1>{t.title}</h1>
-              <div className="sub">{t.subtitle}</div>
-            </div>
+            <h1>{t.subtitle}</h1>
           </div>
           <div className="topbar-right">
             <LangSwitch />

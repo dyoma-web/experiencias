@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
-"""Genera la versión standalone (HTML autocontenidos) en standalone/.
+"""Genera las versiones standalone (HTML autocontenidos) en standalone/.
 
-Produce tres archivos que funcionan sin servidor ni conexión (doble clic):
-  standalone/index.html               — dashboard interactivo
-  standalone/informe-impreso.html     — informe imprimible ES
-  standalone/informe-impreso-en.html  — informe imprimible EN
+Produce archivos que funcionan sin servidor ni conexión (doble clic):
+  standalone/index.html                  — dashboard v1 (línea azul PNUD)
+  standalone/informe-impreso[-en].html   — informes v1
+  standalone/v2/index.html               — dashboard v2 (línea teal/naranja)
+  standalone/v2/portada.html             — portada v2
+  standalone/v2/informe-impreso[-en].html— informes v2
 
 Cómo: parte de los HTML de desarrollo e inserta inline el CSS, los datos,
 los scripts, React/ReactDOM (UMD producción), los JSX precompilados con
@@ -20,7 +22,6 @@ import base64
 import json
 import re
 import subprocess
-import sys
 import urllib.request
 from pathlib import Path
 
@@ -35,6 +36,17 @@ VENDOR_JS = {
 }
 FLAG_CODES = ['mx', 'gt', 'bz', 'sv', 'hn', 'ni', 'cr', 'pa', 'cu', 'do', 'ht', 'jm',
               'tt', 'co', 've', 'gy', 'ec', 'pe', 'bo', 'br', 'py', 'cl', 'ar', 'uy', 'un']
+
+PAGES = [
+    # (html de desarrollo, salida bajo standalone/)
+    ('index.html', 'index.html'),
+    ('informe-impreso/index.html', 'informe-impreso.html'),
+    ('informe-impreso/en/index.html', 'informe-impreso-en.html'),
+    ('v2/index.html', 'v2/index.html'),
+    ('v2/portada.html', 'v2/portada.html'),
+    ('v2/informe-impreso/index.html', 'v2/informe-impreso.html'),
+    ('v2/informe-impreso/en/index.html', 'v2/informe-impreso-en.html'),
+]
 
 
 def fetch(url, dest):
@@ -60,9 +72,8 @@ def js_inline(code):
 
 
 def data_uri(path):
-    p = ROOT / 'assets' / path
-    mime = 'image/svg+xml' if p.suffix == '.svg' else 'image/png'
-    return f'data:{mime};base64,' + base64.b64encode(p.read_bytes()).decode()
+    mime = 'image/svg+xml' if path.suffix == '.svg' else 'image/png'
+    return f'data:{mime};base64,' + base64.b64encode(path.read_bytes()).decode()
 
 
 def compile_jsx(path):
@@ -80,72 +91,67 @@ def compile_jsx(path):
     return r.stdout
 
 
-def resources_script():
-    res = {'pnud_logo': data_uri('pnud-logo-blue.svg')}
+def resources_script(base):
+    """window.__resources para logo y banderas (usado por Flag y PnudMark)."""
+    res = {'pnud_logo': data_uri(ROOT / 'assets' / 'pnud-logo-blue.svg')}
     for code in FLAG_CODES:
-        b = (VENDOR / 'flags' / f'{code}.png').read_bytes()
-        res[f'flag_{code}'] = 'data:image/png;base64,' + base64.b64encode(b).decode()
+        res[f'flag_{code}'] = data_uri(VENDOR / 'flags' / f'{code}.png')
     return 'window.__resources = ' + json.dumps(res) + ';'
 
 
-def inline_tag(kind, content):
-    if kind == 'style':
-        return '<style>\n' + content + '\n</style>'
-    return '<script>\n' + js_inline(content) + '\n</script>'
+def build_page(src_rel, out_rel):
+    src = ROOT / src_rel
+    base = src.parent
+    html = src.read_text(encoding='utf-8')
+    uses_react = 'unpkg.com/react' in html
 
+    # hojas de estilo locales → <style> inline
+    def repl_css(m):
+        href = m.group(1)
+        if href.startswith('http'):
+            return m.group(0)
+        css = (base / href).resolve().read_text(encoding='utf-8')
+        return '<style>\n' + css + '\n</style>'
+    html = re.sub(r'<link rel="stylesheet" href="([^"]+)" />', repl_css, html)
 
-def build_dashboard():
-    html = (ROOT / 'index.html').read_text(encoding='utf-8')
-    css = (ROOT / 'assets' / 'styles.css').read_text(encoding='utf-8')
+    # imágenes y favicon locales (svg/png) → data-URI
+    def repl_img(m):
+        attr, p = m.group(1), m.group(2)
+        if p.startswith(('http', 'data:')):
+            return m.group(0)
+        return f'{attr}="{data_uri((base / p).resolve())}"'
+    html = re.sub(r'(href|src)="([^"]+\.(?:svg|png))"', repl_img, html)
 
-    html = re.sub(r'<link rel="stylesheet" href="assets/styles\.css" />', lambda m: inline_tag('style', css), html)
-    html = html.replace('href="assets/pnud-logo-blue.svg"', f'href="{data_uri("pnud-logo-blue.svg")}"')
+    if uses_react:
+        react = js_inline((VENDOR / 'react.js').read_text(encoding='utf-8'))
+        react_dom = js_inline((VENDOR / 'react-dom.js').read_text(encoding='utf-8'))
+        html = re.sub(r'<script src="https://unpkg\.com/react@[^"]+"[^>]*></script>',
+                      lambda m: '<script>\n' + react + '\n</script>', html)
+        html = re.sub(r'<script src="https://unpkg\.com/react-dom@[^"]+"[^>]*></script>',
+                      lambda m: '<script>\n' + react_dom + '\n</script>\n  <script>\n' + resources_script(base) + '\n</script>', html)
+        html = re.sub(r'\s*<script src="https://unpkg\.com/@babel/[^"]+"[^>]*></script>', '', html)
 
-    # CDN → vendor inline (React producción; Babel ya no hace falta en el navegador)
-    react = js_inline((VENDOR / 'react.js').read_text(encoding='utf-8'))
-    react_dom = js_inline((VENDOR / 'react-dom.js').read_text(encoding='utf-8'))
-    html = re.sub(r'<script src="https://unpkg\.com/react@[^"]+"[^>]*></script>',
-                  lambda m: '<script>\n' + react + '\n</script>', html)
-    html = re.sub(r'<script src="https://unpkg\.com/react-dom@[^"]+"[^>]*></script>',
-                  lambda m: '<script>\n' + react_dom + '\n</script>\n  <script>\n' + resources_script() + '\n</script>', html)
-    html = re.sub(r'\s*<script src="https://unpkg\.com/@babel/[^"]+"[^>]*></script>', '', html)
+    # scripts locales → inline (compilando los .jsx)
+    def repl_script(m):
+        p = m.group(1)
+        f = (base / p).resolve()
+        code = compile_jsx(f) if f.suffix == '.jsx' else f.read_text(encoding='utf-8')
+        return '<script>\n' + js_inline(code) + '\n</script>'
+    html = re.sub(r'<script(?: type="text/babel")? src="((?!https?://)[^"]+)"></script>', repl_script, html)
 
-    def repl_asset(m):
-        name = m.group(1)
-        p = ROOT / 'assets' / name
-        code = compile_jsx(p) if p.suffix == '.jsx' else p.read_text(encoding='utf-8')
-        return inline_tag('script', code)
+    assert not re.search(r'(?:src|href)="(?!https?://|data:|#)[^"]*\.(?:js|jsx|css|svg|png)"', html), \
+        f'quedaron referencias locales en {out_rel}'
+    assert 'unpkg.com' not in html, f'queda CDN en {out_rel}'
 
-    html = re.sub(r'<script(?: type="text/babel")? src="assets/([^"]+)"></script>', repl_asset, html)
-
-    assert 'src="assets/' not in html and 'unpkg.com' not in html, 'quedaron referencias externas en el dashboard'
-    (OUT_DIR / 'index.html').write_text(html, encoding='utf-8', newline='\n')
-    print(f'OK → standalone/index.html ({len(html) // 1024} KB)')
-
-
-def build_informe(src_rel, out_name, depth):
-    html = (ROOT / src_rel).read_text(encoding='utf-8')
-    pre = '../' * depth
-    css = (ROOT / 'assets' / 'styles.css').read_text(encoding='utf-8')
-    html = html.replace(f'<link rel="stylesheet" href="{pre}assets/styles.css" />', inline_tag('style', css))
-    for img in ('pnud-logo-blue.svg', 'qr-dashboard.svg'):
-        html = html.replace(f'{pre}assets/{img}', data_uri(img))
-
-    def repl_asset(m):
-        code = (ROOT / 'assets' / m.group(1)).read_text(encoding='utf-8')
-        return inline_tag('script', code)
-
-    html = re.sub(r'<script src="' + re.escape(pre) + r'assets/([^"]+)"></script>', repl_asset, html)
-
-    assert not re.search(r'(?:src|href)="[^"]*assets/', html), f'quedaron referencias externas en {out_name}'
-    (OUT_DIR / out_name).write_text(html, encoding='utf-8', newline='\n')
-    print(f'OK → standalone/{out_name} ({len(html) // 1024} KB)')
+    out = OUT_DIR / out_rel
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(html, encoding='utf-8', newline='\n')
+    print(f'OK → standalone/{out_rel} ({len(html) // 1024} KB)')
 
 
 if __name__ == '__main__':
     ensure_vendor()
     OUT_DIR.mkdir(exist_ok=True)
-    build_dashboard()
-    build_informe('informe-impreso/index.html', 'informe-impreso.html', 1)
-    build_informe('informe-impreso/en/index.html', 'informe-impreso-en.html', 2)
+    for src_rel, out_rel in PAGES:
+        build_page(src_rel, out_rel)
     print('Standalone regenerado. Recuerda re-ejecutar este script tras cambios en el desarrollo.')

@@ -48,6 +48,12 @@ PAGES = [
     ('v2/informe-impreso/en/index.html', 'v2/informe-impreso-en.html'),
 ]
 
+EMBEDS = [
+    # (standalone ya generado, salida, title del iframe)
+    ('v2/index.html', 'v2/embed-drupal.html', 'Repositorio de experiencias'),
+    ('index.html', 'embed-drupal.html', 'Repositorio de experiencias'),
+]
+
 
 def fetch(url, dest):
     if dest.exists() and dest.stat().st_size > 0:
@@ -149,9 +155,30 @@ def build_page(src_rel, out_rel):
     print(f'OK → standalone/{out_rel} ({len(html) // 1024} KB)')
 
 
+def build_embed(src_out_rel, embed_rel, title):
+    """Empaqueta un standalone como UN solo <iframe srcdoc="..."> para pegar
+    en CMS (Drupal) que filtran <script>/<style> pero permiten iframes.
+    Todo el documento va escapado dentro del atributo srcdoc, por lo que los
+    filtros del CMS no ven ninguna etiqueta que eliminar; el navegador lo
+    ejecuta como documento propio del iframe (las modales no chocan con las
+    capas del CMS). El iframe usa altura fija y la app scrollea adentro."""
+    html = (OUT_DIR / src_out_rel).read_text(encoding='utf-8')
+    esc = (html.replace('&', '&amp;').replace('"', '&quot;')
+               .replace('<', '&lt;').replace('>', '&gt;'))
+    iframe = ('<iframe title="' + title + '" '
+              'style="display:block;width:100%;height:85vh;min-height:720px;border:0;" '
+              'srcdoc="' + esc + '"></iframe>\n')
+    out = OUT_DIR / embed_rel
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(iframe, encoding='utf-8', newline='\n')
+    print(f'OK → standalone/{embed_rel} ({len(iframe) // 1024} KB, para pegar en Drupal)')
+
+
 if __name__ == '__main__':
     ensure_vendor()
     OUT_DIR.mkdir(exist_ok=True)
     for src_rel, out_rel in PAGES:
         build_page(src_rel, out_rel)
+    for src_out_rel, embed_rel, title in EMBEDS:
+        build_embed(src_out_rel, embed_rel, title)
     print('Standalone regenerado. Recuerda re-ejecutar este script tras cambios en el desarrollo.')

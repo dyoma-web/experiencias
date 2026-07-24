@@ -12,3 +12,6 @@ desktop.ini
 # Python
 __pycache__/
 *.pyc
+
+# Vendor cacheado por tools/build_standalone.py (se descarga solo)
+tools/vendor/

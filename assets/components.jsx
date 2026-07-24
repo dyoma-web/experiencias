@@ -24,7 +24,7 @@ function PnudMark({ lg }) {
   return (
     <img
       className={'pnud-logo' + (lg ? ' lg' : '')}
-      src="assets/pnud-logo-blue.svg"
+      src={(window.__resources && window.__resources.pnud_logo) || 'assets/pnud-logo-blue.svg'}
       alt="PNUD · Programa de las Naciones Unidas para el Desarrollo"
     />
   );

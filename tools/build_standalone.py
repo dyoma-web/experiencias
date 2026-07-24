@@ -155,14 +155,58 @@ def build_page(src_rel, out_rel):
     print(f'OK → standalone/{out_rel} ({len(html) // 1024} KB)')
 
 
+EMBED_HARNESS = """
+<style>
+  /* modo embed: la altura real la fija el script de abajo sobre el iframe */
+  .app { min-height: 0 !important; }
+</style>
+<script>
+(function () {
+  var fe = null;
+  try { fe = window.frameElement; } catch (e) { /* si fuera cross-origin, no-op */ }
+  if (!fe) return;
+  var P = window.parent;
+  var pending = false;
+  function placeFicha() {
+    /* la ficha (position:fixed) se reubica en la porcion del iframe visible
+       en el viewport del padre, para que no abra fuera de pantalla */
+    var f = document.querySelector('.ficha');
+    if (!f) return;
+    var r = fe.getBoundingClientRect();
+    var visTop = Math.max(0, -r.top);
+    var visBottom = Math.min(r.height, P.innerHeight - r.top);
+    var h = Math.max(360, visBottom - visTop);
+    f.style.top = visTop + 'px';
+    f.style.height = h + 'px';
+  }
+  function fit() {
+    pending = false;
+    var h = Math.ceil(document.body.getBoundingClientRect().height);
+    if (h > 0 && Math.abs((parseInt(fe.style.height, 10) || 0) - h) > 2) fe.style.height = h + 'px';
+    placeFicha();
+  }
+  function req() { if (!pending) { pending = true; requestAnimationFrame(fit); } }
+  new ResizeObserver(req).observe(document.body);
+  new MutationObserver(req).observe(document.body, { subtree: true, childList: true });
+  P.addEventListener('scroll', placeFicha, { passive: true });
+  P.addEventListener('resize', req);
+  window.addEventListener('load', req);
+  req();
+})();
+</script>
+"""
+
+
 def build_embed(src_out_rel, embed_rel, title):
     """Empaqueta un standalone como UN solo <iframe srcdoc="..."> para pegar
     en CMS (Drupal) que filtran <script>/<style> pero permiten iframes.
     Todo el documento va escapado dentro del atributo srcdoc, por lo que los
     filtros del CMS no ven ninguna etiqueta que eliminar; el navegador lo
     ejecuta como documento propio del iframe (las modales no chocan con las
-    capas del CMS). El iframe usa altura fija y la app scrollea adentro."""
+    capas del CMS). Un harness interno ajusta la altura del iframe al
+    contenido (sin scroll interno) y reubica la ficha en la zona visible."""
     html = (OUT_DIR / src_out_rel).read_text(encoding='utf-8')
+    html = html.replace('</body>', EMBED_HARNESS + '</body>')
     esc = (html.replace('&', '&amp;').replace('"', '&quot;')
                .replace('<', '&lt;').replace('>', '&gt;'))
     iframe = ('<iframe title="' + title + '" '

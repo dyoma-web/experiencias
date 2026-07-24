@@ -1915,6 +1915,45 @@ function App() {
 }
 ReactDOM.createRoot(document.getElementById('root')).render(/*#__PURE__*/React.createElement(App, null));
 &lt;/script&gt;
+
+&lt;style&gt;
+  /* modo embed: la altura real la fija el script de abajo sobre el iframe */
+  .app { min-height: 0 !important; }
+&lt;/style&gt;
+&lt;script&gt;
+(function () {
+  var fe = null;
+  try { fe = window.frameElement; } catch (e) { /* si fuera cross-origin, no-op */ }
+  if (!fe) return;
+  var P = window.parent;
+  var pending = false;
+  function placeFicha() {
+    /* la ficha (position:fixed) se reubica en la porcion del iframe visible
+       en el viewport del padre, para que no abra fuera de pantalla */
+    var f = document.querySelector('.ficha');
+    if (!f) return;
+    var r = fe.getBoundingClientRect();
+    var visTop = Math.max(0, -r.top);
+    var visBottom = Math.min(r.height, P.innerHeight - r.top);
+    var h = Math.max(360, visBottom - visTop);
+    f.style.top = visTop + 'px';
+    f.style.height = h + 'px';
+  }
+  function fit() {
+    pending = false;
+    var h = Math.ceil(document.body.getBoundingClientRect().height);
+    if (h &gt; 0 &amp;&amp; Math.abs((parseInt(fe.style.height, 10) || 0) - h) &gt; 2) fe.style.height = h + 'px';
+    placeFicha();
+  }
+  function req() { if (!pending) { pending = true; requestAnimationFrame(fit); } }
+  new ResizeObserver(req).observe(document.body);
+  new MutationObserver(req).observe(document.body, { subtree: true, childList: true });
+  P.addEventListener('scroll', placeFicha, { passive: true });
+  P.addEventListener('resize', req);
+  window.addEventListener('load', req);
+  req();
+})();
+&lt;/script&gt;
 &lt;/body&gt;
 &lt;/html&gt;
 "></iframe>

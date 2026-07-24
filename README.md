@@ -14,6 +14,7 @@ Pensado para publicarse como **mockup en línea (GitHub Pages)** para el cliente
 | `assets/` | Estilos, lógica (React vía CDN), datos y logos. |
 | `assets/experiences.js` | **Datos reales** generados desde el Excel fuente (99 vinculadas al PNUD + 50 adicionales). No editar a mano. |
 | `standalone/` | **Versión compilada autocontenida** (un HTML por página, sin CDN ni servidor: funcionan con doble clic). Se regenera con `python tools/build_standalone.py` — NO editar a mano. |
+| `v2/` | **Versión alternativa con la nueva línea gráfica** "Instituciones Democráticas para el Futuro" (teal/naranja, Mulish, referentes en `refentes/`). Incluye `portada.html`, dashboard e informes. Tiene sus propios estilos/componentes pero **comparte los datos** (`../assets/experiences.js` y `geo.js`): regenerar el Excel actualiza ambas versiones. |
 | `tools/xlsx_to_experiences.py` | Regenera `assets/experiences.js` desde el Excel (preserva ids y traducciones EN existentes). |
 | `tools/build_standalone.py` | Regenera `standalone/` desde el desarrollo (React precompilado, CSS/datos/imágenes/banderas embebidos). Ejecutar tras cada cambio en el desarrollo. |
 | `tools/make-qr.py` | Regenera el QR del informe con la URL pública real. |

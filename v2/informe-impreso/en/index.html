@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Executive summary · Public governance experience bank</title>
+  <link rel="stylesheet" href="../../assets/styles.css" />
+  <style>
+    body { background: #e9efee; }
+    .page-stage { padding: 38px 20px 60px; display: flex; justify-content: center; }
+    .sheet {
+      width: 794px; max-width: 100%; background: #fff; box-shadow: var(--shadow-lg);
+      padding: 52px 56px 30px; position: relative; display: flex; flex-direction: column; min-height: 1123px;
+    }
+    .rep-head { display: flex; align-items: flex-start; justify-content: space-between; }
+    .rep-eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 1.4px; color: var(--blue-600); text-transform: uppercase; }
+    .rep-eyebrow .sep { color: var(--line-strong); margin: 0 8px; }
+    .rep-eyebrow .muted { color: var(--muted); }
+    .rep-logo { height: 64px; width: auto; display: block; }
+    .rep-logo-sm { height: 34px; width: auto; display: block; }
+    h1.rep-title { font-size: 38px; line-height: 1.08; font-weight: 800; color: var(--blue-700); letter-spacing: -.6px; margin: 26px 0 0; max-width: 560px; }
+    .rep-sub { font-size: 17px; font-weight: 600; color: var(--blue-600); line-height: 1.35; margin: 14px 0 0; max-width: 500px; }
+    .rep-rule { width: 38px; height: 3px; background: var(--blue-600); border-radius: 2px; margin: 18px 0; }
+    .rep-intro { font-size: 14.5px; line-height: 1.6; color: var(--text); max-width: 560px; margin: 0; }
+
+    .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 30px 0 8px; }
+    .stat-card { border: 1px solid var(--line); border-radius: var(--r-md); padding: 18px 16px 16px; text-align: center; }
+    .stat-card .ic-wrap { color: var(--blue-600); display: flex; justify-content: center; margin-bottom: 12px; }
+    .stat-card.teal .ic-wrap, .stat-card.teal .num { color: var(--teal-600); }
+    .stat-card .num { font-size: 40px; font-weight: 900; color: var(--blue-700); line-height: 1; letter-spacing: -1px; }
+    .stat-card .lbl { font-size: 13px; color: var(--muted); margin-top: 8px; line-height: 1.25; font-weight: 500; }
+
+    .rep-cols { display: grid; grid-template-columns: 0.92fr 1.08fr; gap: 36px; margin-top: 34px; align-items: start; }
+    .col-title { font-size: 15px; font-weight: 700; color: var(--ink); margin: 0 0 16px; }
+    .cov-map { aspect-ratio: 460 / 586; max-width: 218px; margin: 0 auto; background: linear-gradient(180deg,#eef5f4,#e3edec); border-radius: 10px; overflow: hidden; border: 1px solid var(--line); }
+    .cov-svg { width: 100%; height: 100%; display: block; }
+
+    .bars { display: flex; flex-direction: column; gap: 13px; }
+    .bar-row { display: grid; grid-template-columns: 1fr; gap: 6px; }
+    .bar-label { font-size: 13.5px; color: var(--text); font-weight: 500; }
+    .bar-track { display: flex; align-items: center; gap: 12px; }
+    .bar-fill-wrap { flex: 1; }
+    .bar-fill { height: 17px; border-radius: 3px; }
+    .bar-pct { font-size: 14px; font-weight: 700; color: var(--ink); width: 40px; text-align: right; font-variant-numeric: tabular-nums; }
+
+    .qr-callout {
+      margin-top: 36px; border: 1.5px solid var(--blue-100); background: var(--blue-50);
+      border-radius: var(--r-lg); padding: 26px 30px; display: grid; grid-template-columns: auto 1fr; gap: 30px; align-items: center;
+    }
+    .qr-box { width: 124px; height: 124px; background: #fff; border-radius: 8px; padding: 10px; box-shadow: var(--shadow-sm); }
+    .qr-box img { width: 100%; height: 100%; display: block; image-rendering: pixelated; }
+    .qr-cta { display: flex; align-items: flex-start; gap: 14px; }
+    .qr-icon { width: 46px; height: 46px; border-radius: 50%; background: var(--blue-600); color: #fff; display: grid; place-items: center; flex: none; }
+    .qr-cta h3 { font-size: 21px; font-weight: 800; color: var(--blue-700); margin: 0; line-height: 1.15; }
+    .qr-cta p { font-size: 14px; color: var(--text); margin: 8px 0 0; line-height: 1.45; max-width: 340px; }
+    .qr-cta .url { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; font-size: 12.5px; font-weight: 700; color: var(--blue-600); font-family: var(--mono); word-break: break-all; }
+
+    .rep-foot { margin-top: auto; padding-top: 22px; border-top: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: var(--muted); }
+    .rep-foot .brand { display: flex; align-items: center; gap: 10px; }
+    .rep-foot .brand b { color: var(--ink); font-weight: 700; }
+    .rep-foot .pageno { font-weight: 800; color: var(--ink); font-size: 14px; }
+
+    .legend-inline { display: flex; gap: 16px; margin-top: 16px; }
+    .legend-inline .li { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--muted); }
+    .legend-inline .sw { width: 13px; height: 13px; border-radius: 3px; }
+
+    @media print {
+      @page { size: A4; margin: 0; }
+      body { background: #fff; }
+      .page-stage { padding: 0; }
+      .sheet { box-shadow: none; width: 100%; min-height: 100vh; }
+    }
+    @media (max-width: 840px) {
+      .sheet { padding: 34px 26px 24px; }
+      h1.rep-title { font-size: 30px; }
+      .rep-cols { grid-template-columns: 1fr; gap: 28px; }
+      .stat-row { grid-template-columns: repeat(2, 1fr); }
+      .qr-callout { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+      .qr-cta { flex-direction: column; align-items: center; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <!-- ===================================================================
+       PRINTABLE REPORT PAGE (A4) — English version.
+       NOT linked from the dashboard. Export to PDF (File > Print > Save as PDF)
+       and embed it in the institutional document.
+       The QR points to the public dashboard (auto-detects language).
+       Regenerate the QR with:  python tools/make-qr.py "https://URL/"
+  ==================================================================== -->
+  <div class="page-stage">
+    <div class="sheet" id="sheet">
+      <div class="rep-head">
+        <div class="rep-eyebrow">ANNEX <span class="sep">|</span> <span class="muted">EXPERIENCE BANK</span></div>
+        <img class="rep-logo" src="../../assets/pnud-logo-blue.svg" alt="UNDP · United Nations Development Programme" />
+      </div>
+
+      <h1 class="rep-title">Public governance experience bank in Latin America and the Caribbean</h1>
+      <p class="rep-sub">A repository of institutional experiences organized around six governance accelerators</p>
+
+      <div class="rep-rule"></div>
+      <p class="rep-intro">This report offers an overview of the experiences identified across the region. To explore the full repository, scan the QR code or visit the interactive platform, where you can filter by country, dimension, level of government or institution and access detailed records with official links.</p>
+
+      <div class="stat-row" id="stats"></div>
+
+      <div class="rep-cols">
+        <div>
+          <h2 class="col-title">Regional coverage</h2>
+          <div class="cov-map" id="cov-map"></div>
+          <div class="legend-inline">
+            <div class="li"><span class="sw" style="background:var(--map-alta)"></span>High</div>
+            <div class="li"><span class="sw" style="background:var(--map-media)"></span>Medium</div>
+            <div class="li"><span class="sw" style="background:var(--map-baja)"></span>Low</div>
+          </div>
+        </div>
+        <div>
+          <h2 class="col-title">Experiences by dimension</h2>
+          <div class="bars" id="bars"></div>
+        </div>
+      </div>
+
+      <div class="qr-callout">
+        <div class="qr-box"><img src="../../assets/qr-dashboard.svg" alt="QR code to the interactive repository" /></div>
+        <div class="qr-cta">
+          <span class="qr-icon" id="qr-icon"></span>
+          <div>
+            <h3>Explore the interactive repository</h3>
+            <p>Scan the code to filter by country, dimension, level of government and institution and consult the full records.</p>
+            <span class="url">https://dyoma-web.github.io/experiencias/</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="rep-foot">
+        <div class="brand">
+          <img class="rep-logo-sm" src="../../assets/pnud-logo-blue.svg" alt="UNDP" />
+          <span><b>United Nations Development Programme</b></span>
+        </div>
+        <span>Public governance experience bank · LAC</span>
+        <span class="pageno"></span>
+      </div>
+    </div>
+  </div>
+
+  <script>window.INFORME_LANG = 'en';</script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../../assets/experiences.js"></script>
+  <script src="../../assets/data.js"></script>
+  <script src="../../../assets/geo.js"></script>
+  <script src="../../assets/report.js"></script>
+</body>
+</html>

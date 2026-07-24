@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Instituciones Democráticas para el Futuro · Repositorio de Experiencias</title>
+  <meta name="description" content="Portada del Repositorio de Experiencias de gobernanza pública en América Latina y el Caribe. PNUD." />
+  <link rel="icon" type="image/svg+xml" href="assets/pnud-logo-blue.svg" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Mulish:wght@400;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      background: #3E7F7C;
+      font-family: 'Mulish', system-ui, sans-serif;
+      display: grid; place-items: center; overflow: hidden;
+    }
+    /* lienzo 1080x1240 del referente, escalado para caber en el viewport */
+    .stage { width: 1080px; height: 1240px; flex: none; }
+    .art {
+      width: 1080px; height: 1240px; position: relative; overflow: hidden;
+      background: #3E7F7C; transform-origin: center center;
+    }
+    .rings { position: absolute; right: -190px; bottom: -210px; width: 940px; height: 940px; }
+    .logo { position: absolute; top: 60px; right: 64px; height: 92px; width: auto; display: block; }
+    .title {
+      position: absolute; left: 96px; top: 148px; width: 620px;
+      font-size: 66px; line-height: 1.12; font-weight: 800; color: #223F4A; letter-spacing: -.5px;
+    }
+    .cta {
+      position: absolute; left: 96px; top: 410px;
+      display: inline-flex; align-items: center; gap: 12px;
+      background: #E8622D; color: #fff; text-decoration: none;
+      font-size: 19px; font-weight: 700; padding: 16px 30px; border-radius: 999px;
+      transition: background .15s;
+    }
+    .cta:hover { background: #C74E1F; }
+    .cta svg { width: 20px; height: 20px; }
+    .cap { position: absolute; border-radius: 999px; }
+    .dots-or { background: radial-gradient(circle, rgba(255,255,255,.55) 2.5px, transparent 3px) 0 0 / 14px 14px #E8622D; }
+    .dots-tl { background: radial-gradient(circle, rgba(255,255,255,.6) 2.5px, transparent 3px) 0 0 / 14px 14px #BFD8D3; }
+    .repo {
+      position: absolute; left: 620px; top: 880px;
+      font-size: 34px; font-weight: 700; letter-spacing: 3px; line-height: 1.4;
+      color: #fff; text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+  <div class="stage" id="stage">
+    <div class="art" id="art">
+      <svg class="rings" viewBox="0 0 940 940" aria-hidden="true">
+        <g fill="none" stroke="rgba(255,255,255,0.28)" stroke-width="1.2">
+          <circle cx="470" cy="470" r="80"/><circle cx="470" cy="470" r="112"/>
+          <circle cx="470" cy="470" r="144"/><circle cx="470" cy="470" r="176"/>
+          <circle cx="470" cy="470" r="208"/><circle cx="470" cy="470" r="240"/>
+          <circle cx="470" cy="470" r="272"/><circle cx="470" cy="470" r="304"/>
+          <circle cx="470" cy="470" r="336"/><circle cx="470" cy="470" r="368"/>
+          <circle cx="470" cy="470" r="400"/><circle cx="470" cy="470" r="432"/>
+        </g>
+      </svg>
+
+      <img class="logo" src="assets/pnud-logo-white.svg" alt="PNUD · Programa de las Naciones Unidas para el Desarrollo" />
+
+      <h1 class="title">Instituciones Democráticas para el&nbsp;Futuro</h1>
+
+      <a class="cta" href="index.html">Ingresar al repositorio
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+
+      <!-- motivo de cápsulas (posiciones del referente) -->
+      <div class="cap" style="left:110px; top:500px; width:96px;  height:72px;  background:#DDE9EA;"></div>
+      <div class="cap" style="left:110px; top:596px; width:96px;  height:232px; background:#E8622D;"></div>
+      <div class="cap" style="left:232px; top:520px; width:86px;  height:152px; background:#BFD8D3;"></div>
+      <div class="cap" style="left:232px; top:700px; width:76px;  height:64px;  background:#223F4A;"></div>
+      <div class="cap dots-or" style="left:232px; top:792px; width:86px; height:86px;"></div>
+      <div class="cap" style="left:344px; top:488px; width:100px; height:354px; background:#F4F8F8;"></div>
+      <div class="cap" style="left:344px; top:868px; width:86px;  height:148px; background:#223F4A;"></div>
+      <div class="cap" style="left:472px; top:520px; width:80px;  height:66px;  background:#223F4A;"></div>
+      <div class="cap" style="left:472px; top:610px; width:70px;  height:58px;  background:#E8622D;"></div>
+      <div class="cap" style="left:472px; top:692px; width:88px;  height:250px; background:#DDE9EA;"></div>
+      <div class="cap dots-tl" style="left:588px; top:500px; width:88px; height:168px;"></div>
+      <div class="cap" style="left:588px; top:692px; width:72px;  height:60px;  background:#fff;"></div>
+      <div class="cap" style="left:694px; top:520px; width:92px;  height:260px; background:#E8622D;"></div>
+
+      <div class="repo">Repositorio de<br />Experiencias</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var stage = document.getElementById('stage'), art = document.getElementById('art');
+      function fit() {
+        var s = Math.min(window.innerWidth / 1080, window.innerHeight / 1240);
+        art.style.transform = 'scale(' + s + ')';
+        stage.style.width = 1080 * s + 'px';
+        stage.style.height = 1240 * s + 'px';
+        art.style.transformOrigin = 'top left';
+      }
+      fit();
+      window.addEventListener('resize', fit);
+    })();
+  </script>
+</body>
+</html>

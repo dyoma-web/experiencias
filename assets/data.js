@@ -36,6 +36,8 @@
     C('BO', 'Bolivia', 'Bolivia', '🇧🇴'), C('BR', 'Brasil', 'Brazil', '🇧🇷'),
     C('PY', 'Paraguay', 'Paraguay', '🇵🇾'), C('CL', 'Chile', 'Chile', '🇨🇱'),
     C('AR', 'Argentina', 'Argentina', '🇦🇷'), C('UY', 'Uruguay', 'Uruguay', '🇺🇾'),
+    // pseudo-país para experiencias regionales ALC (sin geografía en el mapa)
+    C('UN', 'Regional (ALC)', 'Regional (LAC)', '🇺🇳'),
   ];
   const cName = {}; countries.forEach((c) => (cName[c.code] = c));
 
@@ -76,7 +78,7 @@
     vinculadas: experiences.filter((e) => e.vinculadaPNUD).length,
     adicionales: experiences.filter((e) => !e.vinculadaPNUD).length,
     dimensiones: dimensions.length,
-    paises: Object.values(byCountry).filter((v) => v > 0).length,
+    paises: countries.filter((c) => c.code !== 'UN' && byCountry[c.code] > 0).length,
   };
 
   // ---- diccionario de cadenas de interfaz ----
@@ -98,6 +100,7 @@
       pnudTag: 'PNUD',
       fhPais: 'País', fhNivel: 'Nivel de gobierno', fhInst: 'Institución', fhAnio: 'Año o período',
       fhDesc: 'Descripción', fhBP: 'Buena práctica', fhActores: 'Actores principales', fhLinks: 'Enlaces de consulta',
+      fhComentarios: 'Comentarios adicionales',
       remove: 'Quitar', close: 'Cerrar', zoomIn: 'Acercar', zoomOut: 'Alejar',
       csvHead: ['Título', 'Dimensión', 'País', 'Institución', 'Nivel', 'Año', 'Vinculada PNUD'], csvYes: 'Sí', csvNo: 'No',
     },
@@ -118,6 +121,7 @@
       pnudTag: 'UNDP',
       fhPais: 'Country', fhNivel: 'Level of government', fhInst: 'Institution', fhAnio: 'Year or period',
       fhDesc: 'Description', fhBP: 'Best practice', fhActores: 'Key actors', fhLinks: 'Reference links',
+      fhComentarios: 'Additional comments',
       remove: 'Remove', close: 'Close', zoomIn: 'Zoom in', zoomOut: 'Zoom out',
       csvHead: ['Title', 'Dimension', 'Country', 'Institution', 'Level', 'Year', 'UNDP-linked'], csvYes: 'Yes', csvNo: 'No',
     },

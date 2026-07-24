@@ -232,6 +232,11 @@ function Ficha({ exp, dim, onClose }) {
             <p className="desc">{loc.actores}</p>
           </>)}
 
+          {loc.comentarios && (<>
+            <h4>{t.fhComentarios}</h4>
+            <p className="desc">{loc.comentarios}</p>
+          </>)}
+
           {exp.fuentes && exp.fuentes.length > 0 && (<>
             <h4>{t.fhLinks}</h4>
             <div className="ficha-sources">

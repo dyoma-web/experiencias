@@ -1,6 +1,6 @@
 # Banco de experiencias de gobernanza pública — PNUD ALC
 
-Repositorio interactivo de **104 experiencias institucionales reales** de gobernanza
+Repositorio interactivo de **149 experiencias institucionales reales** de gobernanza
 pública en América Latina y el Caribe, organizadas por seis aceleradores de gobernanza.
 Pensado para publicarse como **mockup en línea (GitHub Pages)** para el cliente.
 
@@ -12,20 +12,26 @@ Pensado para publicarse como **mockup en línea (GitHub Pages)** para el cliente
 | `informe-impreso/index.html` | **Página de informe imprimible (A4) en español.** Datos generales + mapa + barras + QR hacia el dashboard. **No está enlazada desde el dashboard** porque va dentro de un documento impreso → exportar a PDF con *Imprimir → Guardar como PDF*. |
 | `informe-impreso/en/index.html` | **Versión en inglés** del informe imprimible. |
 | `assets/` | Estilos, lógica (React vía CDN), datos y logos. |
-| `assets/experiences.js` | **Datos reales** generados desde el Excel de la guía estratégica (54 vinculadas al PNUD + 50 adicionales). No editar a mano. |
+| `assets/experiences.js` | **Datos reales** generados desde el Excel fuente (99 vinculadas al PNUD + 50 adicionales). No editar a mano. |
+| `tools/xlsx_to_experiences.py` | Regenera `assets/experiences.js` desde el Excel (preserva ids y traducciones EN existentes). |
 | `tools/make-qr.py` | Regenera el QR del informe con la URL pública real. |
 | `Soportes/` | Fuentes originales: mockup y Excel de casos. |
 | `_legacy/` | Versiones anteriores del prototipo (datos sintéticos). No se publican. |
 
 ## Datos
 
-Los datos provienen de `Soportes/Guia estrategica_ejemplos y experiencias.xlsx`
+Los datos provienen de `Soportes/EXPERIENCIAS PNUD Y OTRAS FUENTES - ALC- 22-06-26.xlsx`
 (hojas *Experiencias PNUD* y *Otras experiencias*). Para regenerarlos tras editar el Excel:
 
 ```bash
-# (script de extracción incluido en el historial; ver tools/)
-python tools/make-qr.py "https://dyoma-web.github.io/experiencias/"
+python tools/xlsx_to_experiences.py "Soportes/EXPERIENCIAS PNUD Y OTRAS FUENTES - ALC- 22-06-26.xlsx"
 ```
+
+El script casa cada fila contra las entradas existentes (por país + dimensión + título)
+para preservar `id` y el bloque `en`; las entradas nuevas toman su traducción EN de
+`tools/en_new.json` y los "Comentarios adicionales" de `tools/comentarios_en.json`.
+La versión anterior del Excel (`Soportes/Guia estrategica_ejemplos y experiencias.xlsx`,
+base de los ids 1–104) se conserva como referencia.
 
 ## Publicar en GitHub Pages
 
